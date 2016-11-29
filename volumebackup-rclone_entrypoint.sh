@@ -24,8 +24,9 @@ for directory_name in $(find $BACKUP_SOURCEDIR/* -maxdepth 0 -type d -printf "%f
 	# If the directory is a named volume, i.e. no hexadecimal, 64 characters long folder name
 	if [ -z $(echo $directory_name | grep -E '[0-9a-f]{64}') ]; then
 		# rclone sync it to the target directory and save permissions to a file next to it
-		rclone sync $BACKUP_SOURCEDIR/$directory_name $BACKUP_TARGET/ --delete-after --transfers 2 --retries 10 --stats 30s --ask-password=false
+		rclone mkdir $BACKUP_TARGET/$directory_name
+		rclone sync $BACKUP_SOURCEDIR/$directory_name $BACKUP_TARGET/$directory_name/ --delete-after --transfers 2 --retries 10 --stats 30s --ask-password=false
 		getfacl -RPpn $BACKUP_SOURCEDIR/$directory_name > /tmp/$directory_name.meta
-		rclone move /tmp/$directory_name.meta $BACKUP_TARGET/
+		rclone move /tmp/$directory_name.meta $BACKUP_TARGET/$directory_name/ --retries 10 --stats 30s --ask-password=false
 	fi
 done
