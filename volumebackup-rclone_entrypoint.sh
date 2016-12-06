@@ -29,8 +29,8 @@ for directory_name in $(find $BACKUP_SOURCEDIR/* -maxdepth 0 -type d -printf "%f
 		echo "Syncing docker volume $directory_name"
 		# rclone sync it to the target directory and save permissions to a file next to it
 		rclone mkdir $BACKUP_TARGET/$directory_name
-		rclone sync $BACKUP_SOURCEDIR/$directory_name $BACKUP_TARGET/$directory_name/ --delete-after --transfers "$NUM_TRANSFERS" --checkers "$NUM_CHECKERS" --retries 10 --stats "$STATS_FREQUENCY" --ask-password=false --log-file "/tmp/$directory_name.log" "$ADDITIONAL_RCLONE_PARAMS"
+		rclone sync $BACKUP_SOURCEDIR/$directory_name $BACKUP_TARGET/$directory_name/ --delete-after --transfers "$NUM_TRANSFERS" --checkers "$NUM_CHECKERS" --retries 10 --stats "$STATS_FREQUENCY" --ask-password=false --log-file "/tmp/$directory_name.log" $ADDITIONAL_RCLONE_PARAMS
 		getfacl -RPpn $BACKUP_SOURCEDIR/$directory_name > /tmp/$directory_name.meta
-		rclone move /tmp/$directory_name.meta $BACKUP_TARGET/$directory_name/ --retries 10 --stats "$STATS_FREQUENCY" --ask-password=false --log-file "/tmp/$directory_name-acl.log"
+		rclone move /tmp/$directory_name.meta $BACKUP_TARGET/$directory_name/ --retries 10 --stats "$STATS_FREQUENCY" --ask-password=false --log-file "/tmp/$directory_name.acl.log"
 	fi
 done
